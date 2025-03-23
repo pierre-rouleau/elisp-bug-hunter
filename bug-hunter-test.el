@@ -1,3 +1,5 @@
+;;; bug-hunter-test.el --- ert test for bug-hunter.  -*- lexical-binding: t; -*-
+
 (unless (bound-and-true-p package--initialized)
   (setq
    package-user-dir (expand-file-name
@@ -7,7 +9,7 @@
   (package-initialize))
 
 (require 'ert)
-(require 'cl)
+(require 'cl-lib)
 (require 'bug-hunter)
 ;; (fset 'bug-hunter--report #'ignore)
 ;; (fset 'bug-hunter--report-end #'ignore)
@@ -69,9 +71,9 @@
       (insert "(setq useless 1)\n#\n(setq useless 1)\n"))
     (should
      (equal (bug-hunter-file file nil)
-            [(invalid-read-syntax "#" 3 0) 2 0]))
+            [(invalid-read-syntax "#\n" 3 0) 2 0]))
     (should
-     (equal '(bug-caught (invalid-read-syntax "#" 3 0) 2 0)
+     (equal '(bug-caught (invalid-read-syntax "#\n" 3 0) 2 0)
             (bug-hunter--read-contents file)))
     (with-temp-file file
       (insert "(setq useless 1)\n)\n(setq useless 1)\n"))
